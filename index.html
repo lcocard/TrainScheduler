@@ -55,43 +55,41 @@
       </h2>
     </div>
 
-    <table class="table" style="margin-bottom: 0;">
-      <thead class="thead-dark">
-        <tr>
-          <th scope="row" style="background-color: #077abc; border: 0px;">
-            Current Train Schedule
-          </th>
-          <!--<th scope="col" style="background-color: #077abc; border: 0px;"></th>
-          <th scope="col" style="background-color: #077abc; border: 0px;"></th>
-          <th scope="col" style="background-color: #077abc; border: 0px;"></th>
-          <th scope="col" style="background-color: #077abc; border: 0px;"></th>-->
-        </tr>
-        </tr>
-      </thead>
+    <div class="table-responsive">
+      <table class="table" style="margin-bottom: 0;">
+        <thead class="thead-dark">
+          <tr>
+            <th
+              colspan="5"
+              scope="col"
+              style="background-color: #077abc; border: 0px;"
+            >
+              Current Train Schedule
+            </th>
+          </tr>
+        </thead>
+        <thead style="font-weight:bold">
+          <tr>
+            <th scope="col">Train Name</th>
+            <th scope="col">Destination</th>
+            <th scope="col">Frequency (min)</th>
+            <th scope="col">Next Arrival</th>
+            <th scope="col">Minutes Away</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row">Trenton Express</th>
+            <td>Trenton</td>
+            <td>25</td>
+            <td>05:35 PM</td>
+            <td>10</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
 
-    <table class="table">
-
-
-      <thead style="font-weight:800">
-        <tr>
-          <th scope="col">Train Name</th>
-          <th scope="col">Destination</th>
-          <th scope="col">Frequency (min)</th>
-          <th scope="col">Next Arrival</th>
-          <th scope="col">Minutes Away</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-          <th scope="row">Trenton Express</th>
-          <td>Trenton</td>
-          <td>25</td>
-          <td>05:35 PM</td>
-          <td>10</td>
-        </tr>
-      </tbody>
-    </table>
-    </table>
+    <!-- ***************************************************************** -->
     <br />
 
     <form>
@@ -115,7 +113,6 @@
           id="InputName"
           aria-describedby="NameHelp"
           placeholder="Train Name"
-          style="width: 98%"
         />
         <small id="NameHelp" class="form-text text-muted"
           >Please enter the train name here!</small
@@ -128,7 +125,6 @@
           class="form-control"
           id="InputDestination"
           placeholder="Destination"
-          style="width: 98%"
         />
       </div>
       <div class="form-group">
@@ -140,7 +136,6 @@
           class="form-control"
           id="InputFirstTrain"
           placeholder="First Train Time"
-          style="width: 98%"
         />
       </div>
       <div class="form-group">
@@ -150,7 +145,6 @@
           class="form-control"
           id="InputFrequency"
           placeholder="Frequency (min)"
-          style="width: 98%"
         />
       </div>
       <button type="submit" class="btn btn-primary submitTrain">Submit</button>
