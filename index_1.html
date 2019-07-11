@@ -1,0 +1,147 @@
+<!-- Train Scheduler - index.html -->
+
+<!DOCTYPE html>
+
+<html lang="US">
+  <head>
+    <meta charset="UTF-8" />
+
+    <title>Train Scheduler</title>
+    <!-- --------------------------------------------------------- -->
+
+    <!-- Proper rendering for mobile devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <!-- Reset Style CSS -->
+    <link rel="stylesheet" type="text/css" href="assets/css/reset.css" />
+    <!-- Google Fonts -->
+    <link
+      href="https://fonts.googleapis.com/css?family=Anton|Orbitron&display=swap"
+      rel="stylesheet"
+    />
+    <!-- Bootstrap Font Awesome -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <!-- Bootstrap CDN -->
+    <link
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+    />
+    <!-- Style CSS -->
+    <link rel="stylesheet" type="text/css" href="assets/css/style.css" />
+    <!-- JQuery -->
+    <script
+      type="text/javascript"
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"
+    ></script>
+    <!-- Added Moment JS -->
+    <script src="https://cdn.jsdelivr.net/momentjs/2.12.0/moment.min.js"></script>
+      </head>
+
+      <body>
+
+<table class="table">
+  <thead class="thead-dark">
+    <tr>
+      <th scope="col">#</th>
+      <th scope="col">First</th>
+      <th scope="col">Last</th>
+      <th scope="col">Handle</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th scope="row">1</th>
+      <td>Mark</td>
+      <td>Otto</td>
+      <td>@mdo</td>
+    </tr>
+    <tr>
+      <th scope="row">2</th>
+      <td>Jacob</td>
+      <td>Thornton</td>
+      <td>@fat</td>
+    </tr>
+    <tr>
+      <th scope="row">3</th>
+      <td>Larry</td>
+      <td>the Bird</td>
+      <td>@twitter</td>
+    </tr>
+  </tbody>
+</table>
+
+
+        <!-- Script -->
+
+        <script>
+          // Assume the following situations.
+
+          // (TEST 1)
+          // First Train of the Day is 3:00 AM
+          // Assume Train comes every 3 minutes.
+          // Assume the current time is 3:16 AM....
+          // What time would the next train be...? (Use your brain first)
+          // It would be 3:18 -- 2 minutes away
+
+          // (TEST 2)
+          // First Train of the Day is 3:00 AM
+          // Assume Train comes every 7 minutes.
+          // Assume the current time is 3:16 AM....
+          // What time would the next train be...? (Use your brain first)
+          // It would be 3:21 -- 5 minutes away
+
+          // ==========================================================
+
+          // Solved Mathematically
+          // Test case 1:
+          // 16 - 00 = 16
+          // 16 % 3 = 1 (Modulus is the remainder)
+          // 3 - 1 = 2 minutes away
+          // 2 + 3:16 = 3:18
+
+          // Solved Mathematically
+          // Test case 2:
+          // 16 - 00 = 16
+          // 16 % 7 = 2 (Modulus is the remainder)
+          // 7 - 2 = 5 minutes away
+          // 5 + 3:16 = 3:21
+
+          // Assumptions
+          var tFrequency = 3;
+
+          // Time is 3:30 AM
+          var firstTime = "03:30";
+
+          // First Time (pushed back 1 year to make sure it comes before current time)
+          var firstTimeConverted = moment(firstTime, "HH:mm").subtract(
+            1,
+            "years"
+          );
+          console.log(firstTimeConverted);
+
+          // Current Time
+          var currentTime = moment();
+          console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+          // Difference between the times
+          var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+          console.log("DIFFERENCE IN TIME: " + diffTime);
+
+          // Time apart (remainder)
+          var tRemainder = diffTime % tFrequency;
+          console.log(tRemainder);
+
+          // Minute Until Train
+          var tMinutesTillTrain = tFrequency - tRemainder;
+          console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+          // Next Train
+          var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+          console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+        </script>
+      </body>
+    </html>
+  </head>
+</html>

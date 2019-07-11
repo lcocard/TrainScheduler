@@ -1,0 +1,49 @@
+/* Train Scheduler - style.css*/
+html {
+  margin: 25px;
+  min-height: 100%;
+  background-color: #e6ecff;
+}
+
+body {
+  background-color: #e6ecff;
+}
+
+h1 {
+  margin-top: -30px;
+}
+
+.top_row {
+  background-color: #077abc;
+}
+
+.jumbotron {
+  background-color: #884225;
+  color: white;
+  height: 10vw;
+}
+
+.table {
+  outline-style: solid;
+  outline-color: #077abc;
+  outline-width: 1px;
+}
+
+#addTrain {
+  background-color: #077abc;
+  color: white;
+}
+
+form {
+  outline-style: solid;
+  outline-color: #077abc;
+  outline-width: 1px;
+}
+
+label,
+.text-muted,
+.form-check-input,
+button,
+input {
+  margin-left: 10px;
+}
