@@ -26,6 +26,7 @@ h1 {
 table {
   outline-width: 1px;
   border: #077abc solid 1px;
+  margin-bottom: 0;
 }
 
 #addTrain {
@@ -51,6 +52,6 @@ button {
   margin-bottom: 10px;
 }
 
-th {
+/*th {
   border-bottom: 0;
-}
+}*/
