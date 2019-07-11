@@ -17,3 +17,40 @@ firebase.initializeApp(config);
 
 // Create a variable to reference the database
 var database = firebase.database();
+
+$("#submitTrain").on("click", function (event) {
+    event.preventDefault();
+    // Get the input values
+    var InputName = $("#InputName").val().trim();
+    var InputName = $("#InputName").val().trim();
+    var InputName = $("#InputName").val().trim();
+    var bidderPrice = parseInt($("#bidder-price").val().trim());
+
+    // Log the Bidder and Price (Even if not the highest)
+    console.log(bidderName);
+    console.log(bidderPrice);
+
+    if (bidderPrice > highPrice) {
+
+        // Alert
+        alert("You are now the highest bidder.");
+
+        // Save the new price in Firebase. This will cause our "value" callback above to fire and update
+        // the UI.
+        database.ref().set({
+            highBidder: bidderName,
+            highPrice: bidderPrice
+        });
+
+        // Log the new High Price
+        console.log("New High Price!");
+        console.log(bidderName);
+        console.log(bidderPrice);
+    }
+
+    else {
+
+        // Alert
+        alert("Sorry that bid is too low. Try again.");
+    }
+});

@@ -23,10 +23,9 @@ h1 {
   height: 10vw;
 }
 
-.table {
-  outline-style: solid;
-  outline-color: #077abc;
+table {
   outline-width: 1px;
+  border: #077abc solid 1px;
 }
 
 #addTrain {
@@ -46,4 +45,12 @@ label,
 button,
 input {
   margin-left: 10px;
+}
+
+button {
+  margin-bottom: 10px;
+}
+
+th {
+  border-bottom: 0;
 }
