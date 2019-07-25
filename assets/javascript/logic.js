@@ -18,6 +18,11 @@ firebase.initializeApp(config);
 // Create a variable to reference the database
 var database = firebase.database();
 
+var validTrainName = 0;
+var validDestination = 0;
+var validFirstTrainTime = 0;
+var validFrequency = 0;
+
 
 // Wait until the DOM has been fully parsed
 window.addEventListener("DOMContentLoaded", function () {
@@ -25,7 +30,6 @@ window.addEventListener("DOMContentLoaded", function () {
     database.ref().on("child_added", function (snapshot) {
 
         // Log everything that's coming out of snapshot
-        console.log(snapshot.val());
         console.log(snapshot.val().TrainName);
         console.log(snapshot.val().Destination);
         console.log(snapshot.val().FirstTrain);
@@ -72,7 +76,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
 
 
-        // Reset the validity of the phone number
+        // Reset the validity
         InputTrainName.setCustomValidity("");
         InputDestination.setCustomValidity("");
         InputFirstTrain.setCustomValidity("");
@@ -86,6 +90,13 @@ window.addEventListener("DOMContentLoaded", function () {
                 // Set up your own custom error message from whatever source you like
                 // Here, it's just hard coded:
                 InputTrainName.setCustomValidity("Please enter a valid train name!");
+                //validTrainName = 0;
+                //console.log("validTrainName 1 = " + validTrainName);
+            } else {
+                InputTrainName.setCustomValidity("Valid");
+                //console.log("InputTrainName.setCustomValidity = " + InputTrainName.setCustomValidity);
+                validTrainName = 1;
+                console.log("validTrainName 2 = " + validTrainName);
             }
 
             // Check to see if it is the Destination that is the problem:
@@ -93,6 +104,13 @@ window.addEventListener("DOMContentLoaded", function () {
                 // Set up your own custom error message from whatever source you like
                 // Here, it's just hard coded:
                 InputDestination.setCustomValidity("Please enter a valid destination!");
+                //validDestination = 0;
+                //console.log("validDestination 1 = " + validDestination);
+            } else {
+                InputDestination.setCustomValidity("Valid");
+                //console.log("InputDestination.setCustomValidity = " + InputDestination.setCustomValidity);
+                validDestination = 1;
+                console.log("validDestination 2 = " + validDestination);
             }
 
             // Check to see if it is the First Train Time that is the problem:
@@ -100,6 +118,14 @@ window.addEventListener("DOMContentLoaded", function () {
                 // Set up your own custom error message from whatever source you like
                 // Here, it's just hard coded:
                 InputFirstTrain.setCustomValidity("Please enter a valid start time!");
+                //var validFirstTrainTime = 0;
+                //console.log("validFirstTrainTime 1 = " + validFirstTrainTime);
+            } else {
+                InputFirstTrain.setCustomValidity("Valid");
+                //console.log("InputFirstTrain.setCustomValidity = " + InputFirstTrain.setCustomValidity);
+                var validFirstTrainTime = 1;
+                console.log("validFirstTrainTime 2 = " + validFirstTrainTime);
+
             }
 
             // Check to see if it is the Frequency that is the problem:
@@ -107,9 +133,18 @@ window.addEventListener("DOMContentLoaded", function () {
                 // Set up your own custom error message from whatever source you like
                 // Here, it's just hard coded:
                 InputFrequency.setCustomValidity("Please enter a valid frequency time!");
-            }
+                //var validFrequency = 0;
+                //console.log("validFrequency 1 = " + validFrequency);
 
+            } else {
+                InputFrequency.setCustomValidity("Valid");
+                //console.log("InputFrequency.setCustomValidity = " + InputFrequency.setCustomValidity);
+                var validFrequency = 1;
+                console.log("validFrequency 2 = " + validFrequency);
+            }
         }
+
+        //if ((validTrainName === 1) && (validDestination === 1) && (validFirstTrainTime === 1) && (validFrequency === 1)) {
 
         var valInputTrainName = $("#InputTrainName").val();
         var valInputDestination = $("#InputDestination").val();
@@ -166,7 +201,9 @@ window.addEventListener("DOMContentLoaded", function () {
         $("#InputDestination").val("");
         $("#InputFirstTrain").val("");
         $("#InputFrequency").val("");
-
+        //} else {
+        //    alert("Your data is invalid, please verify and try to submit again.")
+        //}
     }
 });
 
