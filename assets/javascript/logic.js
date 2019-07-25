@@ -96,13 +96,44 @@ window.addEventListener("DOMContentLoaded", function () {
         console.log("InputFirstTrain = " + valInputFirstTrain);
         console.log("InputFrequency = " + valInputFrequency);
 
-        database.ref().set({
+        database.ref().push({
             TrainName: valInputTrainName,
             Destination: valInputDestination,
             FirstTrain: valInputFirstTrain,
             Frequency: valInputFrequency
 
         });
+
+        // Firebase watcher + initial loader HINT: .on("value")
+        database.ref().on("child_added", function (snapshot) {
+            // Log everything that's coming out of snapshot
+            console.log(snapshot.val());
+            console.log(snapshot.val().TrainName);
+            console.log(snapshot.val().Destination);
+            console.log(snapshot.val().FirstTrain);
+            console.log(snapshot.val().Frequency);
+            // Change the HTML to reflect
+            // $("#InputTrainName").text(snapshot.val().name);
+            //  $("#InputDestination").text(snapshot.val().email);
+            // $("#InputFirstTrain").text(snapshot.val().age);
+            // $("#InputFrequency").text(snapshot.val().comment);
+
+            // Create the new row
+            var newRow = $("<tr>").append(
+                $("<th scope='row'>").text(snapshot.val().TrainName),
+                $("<td>").text(snapshot.val().Destination),
+                $("<td>").text(snapshot.val().FirstTrain),
+                $("<td>").text(snapshot.val().Frequency),
+                //$("<td>").text(minAway),
+            );
+
+            // Append the new row to the table
+            $("#train-scheduler > tbody").append(newRow);
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+
+        });
+
 
 
         $("#InputTrainName").val("");
