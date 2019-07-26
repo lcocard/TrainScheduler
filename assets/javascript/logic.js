@@ -54,12 +54,12 @@ window.addEventListener("DOMContentLoaded", function () {
     // Get DOM references:
 
     // Get the input values
-    var theForm = document.querySelector("#frmTrainInput");
-    var InputTrainName = document.querySelector("#InputTrainName");
-    var InputDestination = document.querySelector("#InputDestination");
-    var InputFirstTrain = document.querySelector("#InputFirstTrain");
-    var InputFrequency = document.querySelector("#InputFrequency");
-    var theSubmitButton = document.getElementById("#submitTrain");
+    theForm = document.querySelector("#frmTrainInput");
+    InputTrainName = document.querySelector("#InputTrainName");
+    InputDestination = document.querySelector("#InputDestination");
+    InputFirstTrain = document.querySelector("#InputFirstTrain");
+    InputFrequency = document.querySelector("#InputFrequency");
+    theSubmitButton = document.getElementById("#submitTrain");
 
 
 
@@ -70,10 +70,24 @@ window.addEventListener("DOMContentLoaded", function () {
 
 
     theForm.addEventListener("submit", validate);
-    submitTrain.addEventListener("click", validate);
+    submitTrain.addEventListener("invalid", validate);
+
+    InputTrainName.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+    InputDestination.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+    InputFirstTrain.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+    InputFrequency.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+
+
 
     function validate(evt) {
-
 
 
         // Reset the validity
@@ -81,6 +95,7 @@ window.addEventListener("DOMContentLoaded", function () {
         InputDestination.setCustomValidity("");
         InputFirstTrain.setCustomValidity("");
         InputFrequency.setCustomValidity("");
+
 
         // Check to see if the form is INVALID for any reason
         if (!theForm.checkValidity()) {
@@ -90,61 +105,31 @@ window.addEventListener("DOMContentLoaded", function () {
                 // Set up your own custom error message from whatever source you like
                 // Here, it's just hard coded:
                 InputTrainName.setCustomValidity("Please enter a valid train name!");
-                //validTrainName = 0;
-                //console.log("validTrainName 1 = " + validTrainName);
             } else {
-                InputTrainName.setCustomValidity("Valid");
-                //console.log("InputTrainName.setCustomValidity = " + InputTrainName.setCustomValidity);
-                validTrainName = 1;
-                console.log("validTrainName 2 = " + validTrainName);
+                // Check to see if it is the Destination that is the problem:
+                if (!InputDestination.validity.valid) {
+                    // Set up your own custom error message from whatever source you like
+                    // Here, it's just hard coded:
+                    InputDestination.setCustomValidity("Please enter a valid destination!");
+                } else {
+                    // Check to see if it is the First Train Time that is the problem:
+                    if (!InputFirstTrain.validity.valid) {
+                        // Set up your own custom error message from whatever source you like
+                        // Here, it's just hard coded:
+                    } else {
+                        // Check to see if it is the Frequency that is the problem:
+                        if (!InputFrequency.validity.valid) {
+                            // Set up your own custom error message from whatever source you like
+                            // Here, it's just hard coded:
+                            InputFrequency.setCustomValidity("Please enter a valid frequency time!");
+
+                        }
+                    }
+                }
             }
 
-            // Check to see if it is the Destination that is the problem:
-            if (!InputDestination.validity.valid) {
-                // Set up your own custom error message from whatever source you like
-                // Here, it's just hard coded:
-                InputDestination.setCustomValidity("Please enter a valid destination!");
-                //validDestination = 0;
-                //console.log("validDestination 1 = " + validDestination);
-            } else {
-                InputDestination.setCustomValidity("Valid");
-                //console.log("InputDestination.setCustomValidity = " + InputDestination.setCustomValidity);
-                validDestination = 1;
-                console.log("validDestination 2 = " + validDestination);
-            }
-
-            // Check to see if it is the First Train Time that is the problem:
-            if (!InputFirstTrain.validity.valid) {
-                // Set up your own custom error message from whatever source you like
-                // Here, it's just hard coded:
-                InputFirstTrain.setCustomValidity("Please enter a valid start time!");
-                //var validFirstTrainTime = 0;
-                //console.log("validFirstTrainTime 1 = " + validFirstTrainTime);
-            } else {
-                InputFirstTrain.setCustomValidity("Valid");
-                //console.log("InputFirstTrain.setCustomValidity = " + InputFirstTrain.setCustomValidity);
-                var validFirstTrainTime = 1;
-                console.log("validFirstTrainTime 2 = " + validFirstTrainTime);
-
-            }
-
-            // Check to see if it is the Frequency that is the problem:
-            if (!InputFrequency.validity.valid) {
-                // Set up your own custom error message from whatever source you like
-                // Here, it's just hard coded:
-                InputFrequency.setCustomValidity("Please enter a valid frequency time!");
-                //var validFrequency = 0;
-                //console.log("validFrequency 1 = " + validFrequency);
-
-            } else {
-                InputFrequency.setCustomValidity("Valid");
-                //console.log("InputFrequency.setCustomValidity = " + InputFrequency.setCustomValidity);
-                var validFrequency = 1;
-                console.log("validFrequency 2 = " + validFrequency);
-            }
         }
 
-        //if ((validTrainName === 1) && (validDestination === 1) && (validFirstTrainTime === 1) && (validFrequency === 1)) {
 
         var valInputTrainName = $("#InputTrainName").val();
         var valInputDestination = $("#InputDestination").val();
@@ -185,11 +170,11 @@ window.addEventListener("DOMContentLoaded", function () {
                 $("<td>").text(snapshot.val().Destination),
                 $("<td>").text(snapshot.val().FirstTrain),
                 $("<td>").text(snapshot.val().Frequency),
-                //$("<td>").text(minAway),
+                //$("<td>").text(minAway)
             );
 
             // Append the new row to the table
-            $("#train-scheduler > tbody").append(newRow);
+            $("#train-scheduler-header > tbody").append(newRow);
         }, function (errorObject) {
             console.log("Errors handled: " + errorObject.code);
 
@@ -201,9 +186,6 @@ window.addEventListener("DOMContentLoaded", function () {
         $("#InputDestination").val("");
         $("#InputFirstTrain").val("");
         $("#InputFrequency").val("");
-        //} else {
-        //    alert("Your data is invalid, please verify and try to submit again.")
-        //}
     }
 });
 
