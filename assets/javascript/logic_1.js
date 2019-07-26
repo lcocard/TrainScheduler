@@ -1,4 +1,4 @@
-/* *********************** Train Scheduler - logic_1.js ****************** */
+/* *********************** Train Scheduler - logic.js ****************** */
 
 /* global moment firebase */
 
@@ -18,172 +18,206 @@ firebase.initializeApp(config);
 // Create a variable to reference the database
 var database = firebase.database();
 
-// Initial Values
-var highPrice = 0;
-var highBidder = "No one :-(";
+var validTrainName = 0;
+var validDestination = 0;
+var validFirstTrainTime = 0;
+var validFrequency = 0;
 
-// --------------------------------------------------------------
 
-// At the initial load and subsequent value changes, get a snapshot of the stored data.
-// This function allows you to update your page in real-time when the firebase database changes.
-database.ref().on("value", function (snapshot) {
 
-    // If Firebase has a highPrice and highBidder stored, update our client-side variables
-    if (snapshot.child("highBidder").exists() && snapshot.child("highPrice").exists()) {
-        // Set the variables for highBidder/highPrice equal to the stored values.
-        highBidder = snapshot.val().highBidder;
-        highPrice = parseInt(snapshot.val().highPrice);
-    }
 
-    // If Firebase does not have highPrice and highBidder values stored, they remain the same as the
-    // values we set when we initialized the variables.
-    // In either case, we want to log the values to console and display them on the page.
-    console.log(highBidder);
-    console.log(highPrice);
-    $("#highest-bidder").text(highBidder);
-    $("#highest-price").text(highPrice);
+// Wait until the DOM has been fully parsed
+window.addEventListener("DOMContentLoaded", function () {
 
-    // If any errors are experienced, log them to console.
-}, function (errorObject) {
-    console.log("The read failed: " + errorObject.code);
-});
+    database.ref().on("child_added", function (snapshot) {
 
-// --------------------------------------------------------------
+        // Log everything that's coming out of snapshot
+        console.log(snapshot.val().TrainName);
+        console.log(snapshot.val().Destination);
+        console.log(snapshot.val().FirstTrain);
+        console.log(snapshot.val().Frequency);
 
-// Whenever a user clicks the submit-bid
+        // Create the new row
+        var newRow = $("<tr>").append(
+            $("<th scope='row'>").text(snapshot.val().TrainName),
+            $("<td>").text(snapshot.val().Destination),
+            $("<td>").text(snapshot.val().Frequency),
+            $("<td>").text(nextTrain),
+            $("<td>").text(tMinutesTillTrain)
+        );
 
-$("#submit-bid").on("click", function (event) {
-    event.preventDefault();
+        // Append the new row to the table
+        $("#train-scheduler > tbody").append(newRow);
+    }, function (errorObject) {
+        console.log("Errors handled: " + errorObject.code);
+
+    });
+
+    // Get DOM references:
+
     // Get the input values
-    var bidderName = $("#bidder-name").val().trim();
-    var bidderPrice = parseInt($("#bidder-price").val().trim());
+    theForm = document.querySelector("#frmTrainInput");
+    InputTrainName = document.querySelector("#InputTrainName");
+    InputDestination = document.querySelector("#InputDestination");
+    InputFirstTrain = document.querySelector("#InputFirstTrain");
+    InputFrequency = document.querySelector("#InputFrequency");
+    theSubmitButton = document.getElementById("#submitTrain");
 
-    // Log the Bidder and Price (Even if not the highest)
-    console.log(bidderName);
-    console.log(bidderPrice);
 
-    if (bidderPrice > highPrice) {
 
-        // Alert
-        alert("You are now the highest bidder.");
+    // Because forms can be submitted via submit buttons but also from pressing ENTER,
+    // we need to make sure the form has gone through custom validation before submit
+    // actually happens. So, we'll validate on the submit button's click event as well
+    // as the form submit.
 
-        // Save the new price in Firebase. This will cause our "value" callback above to fire and update
-        // the UI.
-        database.ref().set({
-            highBidder: bidderName,
-            highPrice: bidderPrice
+
+    theForm.addEventListener("submit", validate);
+    submitTrain.addEventListener("invalid", validate);
+
+    InputTrainName.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+    InputDestination.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+    InputFirstTrain.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+    InputFrequency.addEventListener('input', function (e) {
+        e.target.setCustomValidity('');
+    });
+
+
+
+    function validate(evt) {
+
+
+        // Reset the validity
+        InputTrainName.setCustomValidity("");
+        InputDestination.setCustomValidity("");
+        InputFirstTrain.setCustomValidity("");
+        InputFrequency.setCustomValidity("");
+
+
+        // Check to see if the form is INVALID for any reason
+        if (!theForm.checkValidity()) {
+
+            // Check to see if it is the Train Name that is the problem:
+            if (!InputTrainName.validity.valid) {
+                // Set up your own custom error message from whatever source you like
+                // Here, it's just hard coded:
+                InputTrainName.setCustomValidity("Please enter a valid train name!");
+            } else {
+                // Check to see if it is the Destination that is the problem:
+                if (!InputDestination.validity.valid) {
+                    // Set up your own custom error message from whatever source you like
+                    // Here, it's just hard coded:
+                    InputDestination.setCustomValidity("Please enter a valid destination!");
+                } else {
+                    // Check to see if it is the First Train Time that is the problem:
+                    if (!InputFirstTrain.validity.valid) {
+                        // Set up your own custom error message from whatever source you like
+                        // Here, it's just hard coded:
+                    } else {
+                        // Check to see if it is the Frequency that is the problem:
+                        if (!InputFrequency.validity.valid) {
+                            // Set up your own custom error message from whatever source you like
+                            // Here, it's just hard coded:
+                            InputFrequency.setCustomValidity("Please enter a valid frequency time!");
+
+                        }
+                    }
+                }
+            }
+
+        }
+
+
+        var valInputTrainName = $("#InputTrainName").val();
+        var valInputDestination = $("#InputDestination").val();
+        var valInputFirstTrain = $("#InputFirstTrain").val();
+        var valInputFrequency = $("#InputFrequency").val();
+
+        // Log 
+        console.log("InputTrainName = " + valInputTrainName);
+        console.log("InputDestination = " + valInputDestination);
+        console.log("InputFirstTrain = " + valInputFirstTrain);
+        console.log("InputFrequency = " + valInputFrequency);
+
+        database.ref().push({
+            TrainName: valInputTrainName,
+            Destination: valInputDestination,
+            FirstTrain: valInputFirstTrain,
+            Frequency: valInputFrequency
+
         });
 
-        // Log the new High Price
-        console.log("New High Price!");
-        console.log(bidderName);
-        console.log(bidderPrice);
+        // Firebase watcher + initial loader HINT: .on("value")
+        database.ref().on("child_added", function (snapshot) {
+            // Log everything that's coming out of snapshot
+            console.log(snapshot.val());
+            console.log(snapshot.val().TrainName);
+            console.log(snapshot.val().Destination);
+            console.log(snapshot.val().FirstTrain);
+            console.log(snapshot.val().Frequency);
+
+            // Assumptions
+            var tFrequency = 3;
+
+            // Time is 3:30 AM
+            var firstTime = snapshot.val().FirstTrain;
+
+            // First Time (pushed back 1 year to make sure it comes before current time)
+            var firstTimeConverted = moment(firstTime, "HH:mm").subtract(
+                1,
+                "years"
+            );
+            console.log(firstTimeConverted);
+
+            // Current Time
+            var currentTime = moment();
+            console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm"));
+
+            // Difference between the times
+            var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+            console.log("DIFFERENCE IN TIME: " + diffTime);
+
+            // Time apart (remainder)
+            var tRemainder = diffTime % snapshot.val().Frequency;
+            console.log(tRemainder);
+
+            // Minute Until Train
+            var tMinutesTillTrain = snapshot.val().Frequency - tRemainder;
+            console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+            // Next Train
+            var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+            console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm"));
+
+            // Create the new row
+            var newRow = $("<tr>").append(
+                $("<th scope='row'>").text(snapshot.val().TrainName),
+                $("<td>").text(snapshot.val().Destination),
+                $("<td>").text(snapshot.val().Frequency),
+                $("<td>").text(nextTrain),
+                $("<td>").text(tMinutesTillTrain)
+            );
+
+            // Append the new row to the table
+            $("#train-scheduler-header > tbody").append(newRow);
+
+
+        }, function (errorObject) {
+            console.log("Errors handled: " + errorObject.code);
+
+        });
+
+
+
+        $("#InputTrainName").val("");
+        $("#InputDestination").val("");
+        $("#InputFirstTrain").val("");
+        $("#InputFrequency").val("");
     }
-
-    else {
-
-        // Alert
-        alert("Sorry that bid is too low. Try again.");
-    }
 });
 
-/************************************************ */
-
-
-// Steps to complete:
-
-// 1. Initialize Firebase
-// 2. Create button for adding new employees - then update the html + update the database
-// 3. Create a way to retrieve employees from the employee database.
-// 4. Create a way to calculate the months worked. Using difference between start and current time.
-//    Then use moment.js formatting to set difference in months.
-// 5. Calculate Total billed
-
-// 1. Initialize Firebase
-
-
-// 2. Button for adding Employees
-$("#add-employee-btn").on("click", function (event) {
-    event.preventDefault();
-
-    // Grabs user input
-    var empName = $("#employee-name-input").val().trim();
-    var empRole = $("#role-input").val().trim();
-    var empStart = moment($("#start-input").val().trim(), "MM/DD/YYYY").format("X");
-    var empRate = $("#rate-input").val().trim();
-
-    // Creates local "temporary" object for holding employee data
-    var newEmp = {
-        name: empName,
-        role: empRole,
-        start: empStart,
-        rate: empRate
-    };
-
-    // Uploads employee data to the database
-    database.ref().push(newEmp);
-
-    // Logs everything to console
-    console.log(newEmp.name);
-    console.log(newEmp.role);
-    console.log(newEmp.start);
-    console.log(newEmp.rate);
-
-    alert("Employee successfully added");
-
-    // Clears all of the text-boxes
-    $("#employee-name-input").val("");
-    $("#role-input").val("");
-    $("#start-input").val("");
-    $("#rate-input").val("");
-});
-
-// 3. Create Firebase event for adding employee to the database and a row in the html when a user adds an entry
-database.ref().on("child_added", function (childSnapshot) {
-    console.log(childSnapshot.val());
-
-    // Store everything into a variable.
-    var empName = childSnapshot.val().name;
-    var empRole = childSnapshot.val().role;
-    var empStart = childSnapshot.val().start;
-    var empRate = childSnapshot.val().rate;
-
-    // Employee Info
-    console.log(empName);
-    console.log(empRole);
-    console.log(empStart);
-    console.log(empRate);
-
-    // Prettify the employee start
-    var empStartPretty = moment.unix(empStart).format("MM/DD/YYYY");
-
-    // Calculate the months worked using hardcore math
-    // To calculate the months worked
-    var empMonths = moment().diff(moment(empStart, "X"), "months");
-    console.log(empMonths);
-
-    // Calculate the total billed rate
-    var empBilled = empMonths * empRate;
-    console.log(empBilled);
-
-    // Create the new row
-    var newRow = $("<tr>").append(
-        $("<td>").text(empName),
-        $("<td>").text(empRole),
-        $("<td>").text(empStartPretty),
-        $("<td>").text(empMonths),
-        $("<td>").text(empRate),
-        $("<td>").text(empBilled)
-    );
-
-    // Append the new row to the table
-    $("#employee-table > tbody").append(newRow);
-});
-
-// Example Time Math
-// -----------------------------------------------------------------------------
-// Assume Employee start date of January 1, 2015
-// Assume current date is March 1, 2016
-
-// We know that this is 15 months.
-// Now we will create code in moment.js to confirm that any attempt we use meets this test case

@@ -24,6 +24,8 @@ var validFirstTrainTime = 0;
 var validFrequency = 0;
 
 
+
+
 // Wait until the DOM has been fully parsed
 window.addEventListener("DOMContentLoaded", function () {
 
@@ -35,17 +37,51 @@ window.addEventListener("DOMContentLoaded", function () {
         console.log(snapshot.val().FirstTrain);
         console.log(snapshot.val().Frequency);
 
+        // Assumptions
+        var tFrequency = 3;
+
+        // Time is 3:30 AM
+        var firstTime = snapshot.val().FirstTrain;
+
+        // First Time (pushed back 1 year to make sure it comes before current time)
+        var firstTimeConverted = moment(firstTime, "HH:mm").subtract(
+            1,
+            "years"
+        );
+        console.log("firstTimeConverted = " + firstTimeConverted);
+
+        // Current Time
+        var currentTime = moment();
+        console.log("CURRENT TIME: " + moment(currentTime).format("hh:mm A"));
+
+        // Difference between the times
+        var diffTime = moment().diff(moment(firstTimeConverted), "minutes");
+        console.log("DIFFERENCE IN TIME: " + diffTime);
+
+        // Time apart (remainder)
+        var tRemainder = diffTime % snapshot.val().Frequency;
+        console.log("tRemainder = " + tRemainder);
+
+        // Minute Until Train
+        var tMinutesTillTrain = snapshot.val().Frequency - tRemainder;
+        console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
+
+        // Next Train
+        var nextTrain = moment().add(tMinutesTillTrain, "minutes");
+        console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm A"));
+
         // Create the new row
         var newRow = $("<tr>").append(
             $("<th scope='row'>").text(snapshot.val().TrainName),
             $("<td>").text(snapshot.val().Destination),
-            $("<td>").text(snapshot.val().FirstTrain),
             $("<td>").text(snapshot.val().Frequency),
-            //$("<td>").text(minAway),
+            $("<td>").text(nextTrain.format("hh:mm A")),
+            $("<td>").text(tMinutesTillTrain)
         );
 
         // Append the new row to the table
-        $("#train-scheduler > tbody").append(newRow);
+        $("#train-scheduler-body").append(newRow);
+
     }, function (errorObject) {
         console.log("Errors handled: " + errorObject.code);
 
@@ -149,37 +185,6 @@ window.addEventListener("DOMContentLoaded", function () {
             Frequency: valInputFrequency
 
         });
-
-        // Firebase watcher + initial loader HINT: .on("value")
-        database.ref().on("child_added", function (snapshot) {
-            // Log everything that's coming out of snapshot
-            console.log(snapshot.val());
-            console.log(snapshot.val().TrainName);
-            console.log(snapshot.val().Destination);
-            console.log(snapshot.val().FirstTrain);
-            console.log(snapshot.val().Frequency);
-            // Change the HTML to reflect
-            // $("#InputTrainName").text(snapshot.val().name);
-            //  $("#InputDestination").text(snapshot.val().email);
-            // $("#InputFirstTrain").text(snapshot.val().age);
-            // $("#InputFrequency").text(snapshot.val().comment);
-
-            // Create the new row
-            var newRow = $("<tr>").append(
-                $("<th scope='row'>").text(snapshot.val().TrainName),
-                $("<td>").text(snapshot.val().Destination),
-                $("<td>").text(snapshot.val().FirstTrain),
-                $("<td>").text(snapshot.val().Frequency),
-                //$("<td>").text(minAway)
-            );
-
-            // Append the new row to the table
-            $("#train-scheduler-header > tbody").append(newRow);
-        }, function (errorObject) {
-            console.log("Errors handled: " + errorObject.code);
-
-        });
-
 
 
         $("#InputTrainName").val("");
