@@ -121,6 +121,12 @@ window.addEventListener("DOMContentLoaded", function () {
         e.target.setCustomValidity('');
     });
 
+    database.ref().on("child_added", function (snapshot) {
+
+    });
+
+    // Check to see if the train name is unique:
+
 
 
     function validate(evt) {
@@ -132,10 +138,8 @@ window.addEventListener("DOMContentLoaded", function () {
         InputFirstTrain.setCustomValidity("");
         InputFrequency.setCustomValidity("");
 
-
         // Check to see if the form is INVALID for any reason
         if (!theForm.checkValidity()) {
-
             // Check to see if it is the Train Name that is the problem:
             if (!InputTrainName.validity.valid) {
                 // Set up your own custom error message from whatever source you like

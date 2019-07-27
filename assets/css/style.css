@@ -56,3 +56,16 @@ button {
 /*th {
   border-bottom: 0;
 }*/
+
+/*An incorrect input:*/
+input:invalid {
+  color: red;
+}
+/*An correct input:*/
+input:valid {
+  color: green;
+}
+/*A mandatory field:*/
+input[required] {
+  background-color: #dfe4f5;
+}

@@ -114,12 +114,15 @@
           type="text"
           class="form-control"
           id="InputTrainName"
+          pattern="^(?=.*[a-zA-Z].*)([a-zA-Z0-9 !@#$&():_-]{3,20})$"
           aria-describedby="NameHelp"
           placeholder="Train Name"
           required
         />
         <small id="NameHelp" class="form-text text-muted"
-          >Please enter the train name here!</small
+          >Please enter the train name here! The name must contain between 3 and
+          20 characters (including space and the following optional special
+          characters: !@#$&():_-).</small
         >
       </div>
       <div class="form-group">
@@ -128,9 +131,17 @@
           type="text"
           class="form-control"
           id="InputDestination"
+          pattern="^(?=.*[a-zA-Z].*)([a-zA-Z0-9 \\-_]{3,20})$"
+          aria-describedby="DestinationHelp"
           placeholder="Destination"
           required
         />
+
+        <small id="DestinationHelp" class="form-text text-muted"
+          >Please enter the train name here! The name must contain between 3 and
+          20 characters (including space and the following optional special
+          characters: !@#$&():_-).</small
+        >
       </div>
       <div class="form-group">
         <label for="InputFirstTrain"
