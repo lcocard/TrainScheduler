@@ -49,6 +49,11 @@
         style="font-family: 'Merriweather', serif; font-size: calc(16px + 2.5vw);"
       >
         Anytime is Train Time
+        <p
+          class="pull-right"
+          id="currentTime"
+          style="font-family: 'Merriweather', serif; font-size:calc(10px + 0.6vw);"
+        ></p>
       </h1>
       <h2
         class="text-center TrainScheduler-Subtitle"
@@ -78,6 +83,7 @@
             <th scope="col">Frequency (min)</th>
             <th scope="col">Next Arrival</th>
             <th scope="col">Minutes Away</th>
+            <!--<th scope="col">Remove</th>-->
           </tr>
         </thead>
         <tbody id="train-scheduler-body">

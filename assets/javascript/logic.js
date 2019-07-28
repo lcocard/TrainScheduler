@@ -23,6 +23,11 @@ var validDestination = 0;
 var validFirstTrainTime = 0;
 var validFrequency = 0;
 
+function currentTime() {
+    var current = moment().format('LT');
+    $("#currentTime").html(current);
+    setTimeout(currentTime, 1000);
+};
 
 
 
@@ -138,6 +143,13 @@ window.addEventListener("DOMContentLoaded", function () {
         InputFirstTrain.setCustomValidity("");
         InputFrequency.setCustomValidity("");
 
+        validateTrainName = function (value) {
+            if (isNaN(value) === false && parseInt(value) > 0 && parseInt(value) <= 10) {
+                return true;
+            }
+            return false;
+        }
+
         // Check to see if the form is INVALID for any reason
         if (!theForm.checkValidity()) {
             // Check to see if it is the Train Name that is the problem:
@@ -196,5 +208,11 @@ window.addEventListener("DOMContentLoaded", function () {
         $("#InputFirstTrain").val("");
         $("#InputFrequency").val("");
     }
+
+    currentTime();
+
+    setInterval(function () {
+        window.location.reload();
+    }, 60000);
 });
 
