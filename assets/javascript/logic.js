@@ -22,6 +22,7 @@ var validTrainName = 0;
 var validDestination = 0;
 var validFirstTrainTime = 0;
 var validFrequency = 0;
+var key = "";
 
 function currentTime() {
     var current = moment().format('LT');
@@ -34,19 +35,19 @@ function currentTime() {
 // Wait until the DOM has been fully parsed
 window.addEventListener("DOMContentLoaded", function () {
 
-    database.ref().on("child_added", function (snapshot) {
+    database.ref().on("child_added", function (childSnapshot) {
 
-        // Log everything that's coming out of snapshot
-        console.log(snapshot.val().TrainName);
-        console.log(snapshot.val().Destination);
-        console.log(snapshot.val().FirstTrain);
-        console.log(snapshot.val().Frequency);
+        // Log everything that's coming out of childSnapshot
+        console.log(childSnapshot.val().TrainName);
+        console.log(childSnapshot.val().Destination);
+        console.log(childSnapshot.val().FirstTrain);
+        console.log(childSnapshot.val().Frequency);
 
         // Assumptions
         var tFrequency = 3;
 
         // Time is 3:30 AM
-        var firstTime = snapshot.val().FirstTrain;
+        var firstTime = childSnapshot.val().FirstTrain;
 
         // First Time (pushed back 1 year to make sure it comes before current time)
         var firstTimeConverted = moment(firstTime, "HH:mm").subtract(
@@ -64,24 +65,27 @@ window.addEventListener("DOMContentLoaded", function () {
         console.log("DIFFERENCE IN TIME: " + diffTime);
 
         // Time apart (remainder)
-        var tRemainder = diffTime % snapshot.val().Frequency;
+        var tRemainder = diffTime % childSnapshot.val().Frequency;
         console.log("tRemainder = " + tRemainder);
 
         // Minute Until Train
-        var tMinutesTillTrain = snapshot.val().Frequency - tRemainder;
+        var tMinutesTillTrain = childSnapshot.val().Frequency - tRemainder;
         console.log("MINUTES TILL TRAIN: " + tMinutesTillTrain);
 
         // Next Train
         var nextTrain = moment().add(tMinutesTillTrain, "minutes");
         console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm A"));
 
+        key = childSnapshot.key
+
         // Create the new row
         var newRow = $("<tr>").append(
-            $("<th scope='row'>").text(snapshot.val().TrainName),
-            $("<td>").text(snapshot.val().Destination),
-            $("<td>").text(snapshot.val().Frequency),
-            $("<td>").text(nextTrain.format("hh:mm A")),
-            $("<td>").text(tMinutesTillTrain)
+            $("<th align='left' scope='row'>").text(childSnapshot.val().TrainName),
+            $("<td align='left'>").text(childSnapshot.val().Destination),
+            $("<td align='left'>").text(childSnapshot.val().Frequency),
+            $("<td align='left'>").text(nextTrain.format("hh:mm A")),
+            $("<td align='left'>").text(tMinutesTillTrain),
+            $("<td align='left' style='margin-bottom: 4px;'><button style='background-color: #077abc; margin: 0; padding: 2px 8px 2px 8px; margin-bottom: 16px;' class='deleteTrain btn btn-primary btn-sm' data-key='" + key + "'>X</button></td>")
         );
 
         // Append the new row to the table
@@ -126,8 +130,16 @@ window.addEventListener("DOMContentLoaded", function () {
         e.target.setCustomValidity('');
     });
 
-    database.ref().on("child_added", function (snapshot) {
+    database.ref().on("child_added", function (childSnapshot) {
 
+    });
+
+    //Delete train row using the button
+
+    $(document).on("click", ".deleteTrain", function () {
+        keyref = $(this).attr("data-key");
+        database.ref().child(keyref).remove();
+        window.location.reload();
     });
 
     // Check to see if the train name is unique:
