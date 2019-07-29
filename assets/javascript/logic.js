@@ -23,6 +23,8 @@ var validDestination = 0;
 var validFirstTrainTime = 0;
 var validFrequency = 0;
 var key = "";
+var $FrequencyTimeValue;
+var $keyValue;
 
 function currentTime() {
     var current = moment().format('LT');
@@ -30,8 +32,11 @@ function currentTime() {
     setTimeout(currentTime, 1000);
 };
 
+
+
 // Wait until the DOM has been fully parsed
 window.addEventListener("DOMContentLoaded", function () {
+
 
     database.ref().on("child_added", function (childSnapshot) {
 
@@ -74,6 +79,7 @@ window.addEventListener("DOMContentLoaded", function () {
         var nextTrain = moment().add(tMinutesTillTrain, "minutes");
         console.log("ARRIVAL TIME: " + moment(nextTrain).format("hh:mm A"));
 
+        // This is the Firebase key associated with the values submitted using the input/button elements
         key = childSnapshot.key
 
         // Create the new row
@@ -83,16 +89,60 @@ window.addEventListener("DOMContentLoaded", function () {
             $("<td align='left'>").text(childSnapshot.val().Frequency),
             $("<td align='left'>").text(nextTrain.format("hh:mm A")),
             $("<td align='left'>").text(tMinutesTillTrain),
+            // The Firebase key is stored on the delete button here
             $("<td align='left' style='margin-bottom: 4px;'><button style='background-color: #077abc; margin: 0; padding: 2px 8px 2px 8px; margin-bottom: 16px;' class='deleteTrain btn btn-primary btn-sm' data-key='" + key + "'>X</button></td>")
         );
 
         // Append the new row to the table
         $("#train-scheduler-body").append(newRow);
 
+        // Select table row and read the values in the columns (also: var id = $(this).next.text();)
+        $('#train-scheduler').on('click', 'tr', function () {
+            $(this).addClass('selected').siblings().removeClass('selected');
+            // Retrieving the Firebase key associated with this data row (record) from the Delete button
+            var $keyValue = $(this).find('button').attr("data-key");
+            var $TrainNameValueTemp = $(this).find('th:first').text();
+            var $DestinationValueTemp = $(this).find('td:first').text();
+            var $FrequencyTimeValueTemp = $(this).find('td:eq(1)').text();
+            var $FirstTrainTimeValueAmPmTemp = $(this).find('td:eq(2)').text();
+            // convert time in military format
+            FirstTrainTimeValueTempFORM = "HH:mm";
+            convertedFirstTrainTimeValue = moment($FirstTrainTimeValueAmPmTemp, FirstTrainTimeValueTempFORM);
+            $FirstTrainTimeValueTemp = convertedFirstTrainTimeValue.format("HH:mm");
+            //alert($FrequencyTimeValue);
+
+            // Store the read values into the localStorage
+            localStorage.setItem("trainNameTemp1", $TrainNameValueTemp);
+            localStorage.setItem("destinationTemp1", $DestinationValueTemp);
+            localStorage.setItem("firstTrainTemp1", $FirstTrainTimeValueTemp);
+            localStorage.setItem("frequencyTemp1", $FrequencyTimeValueTemp);
+            localStorage.setItem("$keyValue", $keyValue);
+
+
+            // Get the items from the localStorage and display them in the input boxes
+            $("#InputTrainName").val(localStorage.getItem("trainNameTemp1"));
+            $("#InputDestination").val(localStorage.getItem("destinationTemp1"));
+            $("#InputFirstTrain").val(localStorage.getItem("firstTrainTemp1"));
+            $("#InputFrequency").val(localStorage.getItem("frequencyTemp1"));
+            //Storing the Firebase key in the local storage so it can be used for updating the same record in Firebase
+            $($keyValue).val(localStorage.getItem("$keyValue"));
+            //alert($keyValue);
+
+
+            // Copy the above values in input boxes so we can update the values:
+            // $("#InputTrainName").val($TrainNameValue);
+            // $("#InputDestination").val($DestinationValue);
+            // $("#InputFirstTrain").val($FirstTrainTimeValue);
+            // $("#InputFrequency").val($FrequencyTimeValue);
+
+        });
+
     }, function (errorObject) {
         console.log("Errors handled: " + errorObject.code);
 
     });
+
+
 
     // Get DOM references:
 
@@ -105,7 +155,8 @@ window.addEventListener("DOMContentLoaded", function () {
     theSubmitButton = document.getElementById("#submitTrain");
 
 
-    // Save input values to temp storage
+    // Save input values to temp local storage
+    // Similar, we can use Firebase sessionStorage
 
     $(".form-field").on("keyup", function () {
         var trainNameTemp = $("#InputTrainName").val().trim();
@@ -113,17 +164,23 @@ window.addEventListener("DOMContentLoaded", function () {
         var firstTrainTemp = $("#InputFirstTrain").val().trim();
         var FrequencyTemp = $("#InputFrequency").val().trim();
 
-        sessionStorage.setItem("trainNameTemp1", trainNameTemp);
-        sessionStorage.setItem("destinationTemp1", destinationTemp);
-        sessionStorage.setItem("firstTrainTemp1", firstTrainTemp);
-        sessionStorage.setItem("frequencyTemp1", FrequencyTemp);
+        localStorage.setItem("trainNameTemp1", trainNameTemp);
+        localStorage.setItem("destinationTemp1", destinationTemp);
+        localStorage.setItem("firstTrainTemp1", firstTrainTemp);
+        localStorage.setItem("frequencyTemp1", FrequencyTemp);
     });
 
-    $("#InputTrainName").val(sessionStorage.getItem("trainNameTemp1"));
-    $("#InputDestination").val(sessionStorage.getItem("destinationTemp1"));
-    $("#InputFirstTrain").val(sessionStorage.getItem("firstTrainTemp1"));
-    $("#InputFrequency").val(sessionStorage.getItem("frequencyTemp1"));
+    $("#InputTrainName").val(localStorage.getItem("trainNameTemp1"));
+    $("#InputDestination").val(localStorage.getItem("destinationTemp1"));
+    $("#InputFirstTrain").val(localStorage.getItem("firstTrainTemp1"));
+    $("#InputFrequency").val(localStorage.getItem("frequencyTemp1"));
 
+    // Set cookie for iOS
+
+    //Cookies.set('trainNameTemp2', 'true');
+    //Cookies.set('destinationTemp2', 'true');
+    //Cookies.set('firstTrainTemp2', 'true');
+    //Cookies.set('FrequencyTemp2', 'true');
 
     // Because forms can be submitted via submit buttons but also from pressing ENTER,
     // we need to make sure the form has gone through custom validation before submit
@@ -158,9 +215,6 @@ window.addEventListener("DOMContentLoaded", function () {
         database.ref().child(keyref).remove();
         window.location.reload();
     });
-
-    // Check to see if the train name is unique:
-
 
 
     function validate(evt) {
@@ -213,7 +267,7 @@ window.addEventListener("DOMContentLoaded", function () {
 
 
 
-        // Save input values to real time storage
+        // Save input values to Firebase real time storage
 
         var valInputTrainName = $("#InputTrainName").val();
         var valInputDestination = $("#InputDestination").val();
@@ -226,22 +280,25 @@ window.addEventListener("DOMContentLoaded", function () {
         console.log("InputFirstTrain = " + valInputFirstTrain);
         console.log("InputFrequency = " + valInputFrequency);
 
+
+
         database.ref().push({
             TrainName: valInputTrainName,
             Destination: valInputDestination,
             FirstTrain: valInputFirstTrain,
             Frequency: valInputFrequency,
             dateAdded: firebase.database.ServerValue.TIMESTAMP
-
-
         });
 
-        sessionStorage.clear();
+        // Clear localStorage
+        // Similar, we can clear Firebase sessionStorage
+        localStorage.clear();
 
         $("#InputTrainName").val("");
         $("#InputDestination").val("");
         $("#InputFirstTrain").val("");
         $("#InputFrequency").val("");
+
     }
 
     currentTime();

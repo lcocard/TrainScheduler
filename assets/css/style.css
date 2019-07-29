@@ -67,5 +67,14 @@ input:valid {
 }
 /*A mandatory field:*/
 input[required] {
-  background-color: #dfe4f5;
+  background-color: #cad3f1;
+}
+
+.selected {
+  background-color: #879ef3;
+}
+
+td,
+th {
+  cursor: pointer;
 }
