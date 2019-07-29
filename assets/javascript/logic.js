@@ -30,8 +30,6 @@ function currentTime() {
     setTimeout(currentTime, 1000);
 };
 
-
-
 // Wait until the DOM has been fully parsed
 window.addEventListener("DOMContentLoaded", function () {
 
@@ -106,6 +104,25 @@ window.addEventListener("DOMContentLoaded", function () {
     InputFrequency = document.querySelector("#InputFrequency");
     theSubmitButton = document.getElementById("#submitTrain");
 
+
+    // Save input values to temp storage
+
+    $(".form-field").on("keyup", function () {
+        var trainNameTemp = $("#InputTrainName").val().trim();
+        var destinationTemp = $("#InputDestination").val().trim();
+        var firstTrainTemp = $("#InputFirstTrain").val().trim();
+        var FrequencyTemp = $("#InputFrequency").val().trim();
+
+        sessionStorage.setItem("trainNameTemp1", trainNameTemp);
+        sessionStorage.setItem("destinationTemp1", destinationTemp);
+        sessionStorage.setItem("firstTrainTemp1", firstTrainTemp);
+        sessionStorage.setItem("frequencyTemp1", FrequencyTemp);
+    });
+
+    $("#InputTrainName").val(sessionStorage.getItem("trainNameTemp1"));
+    $("#InputDestination").val(sessionStorage.getItem("destinationTemp1"));
+    $("#InputFirstTrain").val(sessionStorage.getItem("firstTrainTemp1"));
+    $("#InputFrequency").val(sessionStorage.getItem("frequencyTemp1"));
 
 
     // Because forms can be submitted via submit buttons but also from pressing ENTER,
@@ -195,6 +212,9 @@ window.addEventListener("DOMContentLoaded", function () {
         }
 
 
+
+        // Save input values to real time storage
+
         var valInputTrainName = $("#InputTrainName").val();
         var valInputDestination = $("#InputDestination").val();
         var valInputFirstTrain = $("#InputFirstTrain").val();
@@ -210,10 +230,13 @@ window.addEventListener("DOMContentLoaded", function () {
             TrainName: valInputTrainName,
             Destination: valInputDestination,
             FirstTrain: valInputFirstTrain,
-            Frequency: valInputFrequency
+            Frequency: valInputFrequency,
+            dateAdded: firebase.database.ServerValue.TIMESTAMP
+
 
         });
 
+        sessionStorage.clear();
 
         $("#InputTrainName").val("");
         $("#InputDestination").val("");
