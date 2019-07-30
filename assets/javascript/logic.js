@@ -280,24 +280,51 @@ window.addEventListener("DOMContentLoaded", function () {
         console.log("InputFirstTrain = " + valInputFirstTrain);
         console.log("InputFrequency = " + valInputFrequency);
 
+        // if localStorage $keyValue is not null, when we click the submit button we want to update the record, not create a new one
 
+        if (localStorage.getItem("$keyValue") !== null) {
+            keyref = localStorage.getItem("$keyValue")
+            console.log("keyref = " + keyref)
 
-        database.ref().push({
-            TrainName: valInputTrainName,
-            Destination: valInputDestination,
-            FirstTrain: valInputFirstTrain,
-            Frequency: valInputFrequency,
-            dateAdded: firebase.database.ServerValue.TIMESTAMP
-        });
+            $(valInputTrainName).val(localStorage.getItem("trainNameTemp1"));
+            $(valInputDestination).val(localStorage.getItem("destinationTemp1"));
+            $(valInputFirstTrain).val(localStorage.getItem("firstTrainTemp1"));
+            $(valInputFrequency).val(localStorage.getItem("frequencyTemp1"));
 
-        // Clear localStorage
-        // Similar, we can clear Firebase sessionStorage
-        localStorage.clear();
+            database.ref().child(keyref).update({ TrainName: valInputTrainName, Destination: valInputDestination, FirstTrain: valInputFirstTrain, Frequency: valInputFrequency });
+            window.location.reload();
 
-        $("#InputTrainName").val("");
-        $("#InputDestination").val("");
-        $("#InputFirstTrain").val("");
-        $("#InputFrequency").val("");
+            // Clear localStorage
+            // Similar, we can clear Firebase sessionStorage
+            localStorage.clear();
+
+            $("#InputTrainName").val("");
+            $("#InputDestination").val("");
+            $("#InputFirstTrain").val("");
+            $("#InputFrequency").val("");
+
+        } else {
+
+            //key doesn't exist in localStorage ==> create new record
+
+            database.ref().push({
+                TrainName: valInputTrainName,
+                Destination: valInputDestination,
+                FirstTrain: valInputFirstTrain,
+                Frequency: valInputFrequency,
+                dateAdded: firebase.database.ServerValue.TIMESTAMP
+            });
+
+            // Clear localStorage
+            // Similar, we can clear Firebase sessionStorage
+            localStorage.clear();
+
+            $("#InputTrainName").val("");
+            $("#InputDestination").val("");
+            $("#InputFirstTrain").val("");
+            $("#InputFrequency").val("");
+
+        }
 
     }
 
