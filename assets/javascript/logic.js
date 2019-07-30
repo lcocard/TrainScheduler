@@ -128,13 +128,6 @@ window.addEventListener("DOMContentLoaded", function () {
             $($keyValue).val(localStorage.getItem("$keyValue"));
             //alert($keyValue);
 
-
-            // Copy the above values in input boxes so we can update the values:
-            // $("#InputTrainName").val($TrainNameValue);
-            // $("#InputDestination").val($DestinationValue);
-            // $("#InputFirstTrain").val($FirstTrainTimeValue);
-            // $("#InputFrequency").val($FrequencyTimeValue);
-
         });
 
     }, function (errorObject) {
