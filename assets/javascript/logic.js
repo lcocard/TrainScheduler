@@ -7,15 +7,17 @@
 require('dotenv').config();
 var api_key = process.env.API_KEY;
 var appId = process.env.appId;
+var messagingSenderId = process.env.messagingSenderId;
+var projectId = process.env.projectId;
 
 var dbconfig = {
     apiKey: "api_key",
     authDomain: "trainscheduler-c6ded.firebaseapp.com",
     databaseURL: "https://trainscheduler-c6ded.firebaseio.com",
-    projectId: "trainscheduler-c6ded",
+    projectId: "projectId",
     storageBucket: "trainscheduler-c6ded.appspot.com",
-    messagingSenderId: "973729106226",
-    appId: "1:973729106226:web:99ef4ff13c69bf0c"
+    messagingSenderId: "messagingSenderId",
+    appId: "appId"
 };
 
 firebase.initializeApp(dbconfig);
