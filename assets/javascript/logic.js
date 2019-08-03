@@ -3,8 +3,13 @@
 /* global moment firebase */
 
 // Initialize Firebase
-var config = {
-    apiKey: "AIzaSyCF_--ynJN8S7UkOBkUPBVuVSxAZcxxsss",
+
+require('dotenv').config();
+var api_key = process.env.API_KEY;
+var appId = process.env.appId;
+
+var dbconfig = {
+    apiKey: "api_key",
     authDomain: "trainscheduler-c6ded.firebaseapp.com",
     databaseURL: "https://trainscheduler-c6ded.firebaseio.com",
     projectId: "trainscheduler-c6ded",
@@ -13,7 +18,7 @@ var config = {
     appId: "1:973729106226:web:99ef4ff13c69bf0c"
 };
 
-firebase.initializeApp(config);
+firebase.initializeApp(dbconfig);
 
 // Create a variable to reference the database
 var database = firebase.database();
